@@ -1,0 +1,4 @@
+We use the administrative level shapefiles for the areas of interest, and use QGIS to generate a new shape file with only those regions of interest
+/Users/aiyenggar/OneDrive/gis has the shape files for China, India, Israel and USA
+
+I used the most detailed layer in each, stripped the data of most columns, and added one column called cluster. Each of the shapes files was then merged into one using Vector -> Data Management Tools -> Merge Shapefiles to One. This was then saved as patents.shp

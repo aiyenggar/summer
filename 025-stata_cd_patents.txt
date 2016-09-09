@@ -1,0 +1,1 @@
+merge cd_rawlocation and cd_rawinventor on rawlocation_id ?

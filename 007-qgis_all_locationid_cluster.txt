@@ -1,0 +1,13 @@
+In QGIS - Create a Layer from a Delimited Text File, /Users/aiyenggar/OneDrive/PatentsView/location.tsv Let the X: Longitude and Y: Latitude be as default. Set CRS to World Geodetic System 1984 IGNF:WBS84G
+
+
+Vector -> Data Management Tools -> Join Attributes by Location
+Target vector layer
+Join vector layer
+Output table - Keep all records (including non-matching target records)
+
+This will take a few seconds, then say yes to if you would like to add the layer to TOC. Choose the CRS as above.
+
+Open the attribute table, and copy paste to excel
+
+Add an additional line at the end: missing_location_id,DataUnavailable and save as all_locationid_cluster.csv 

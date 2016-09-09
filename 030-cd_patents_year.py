@@ -6,9 +6,9 @@ def getDate(dateString):
     sp=dateString.split('-')
     return datetime.date(int(sp[0]),int(sp[1]),int(sp[2]))
     
-keysFile="/Users/aiyenggar/OneDrive/stata/qgis/cluster_patents.csv"
+keysFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_patents.csv"
 searchFile="/Users/aiyenggar/OneDrive/stata/qgis/patent.tsv"
-outputFile="/Users/aiyenggar/OneDrive/stata/qgis/cluster_patents_year.csv"
+outputFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_patents_year.csv"
 
 default_date = getDate("1947-08-15")
 
