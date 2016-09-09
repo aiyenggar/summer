@@ -1,9 +1,9 @@
 # encoding=utf8  
 import csv
 
-keysFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_rawinventor_rawlocation_cluster.csv"
-searchFile="/Users/aiyenggar/OneDrive/stata/qgis/rawassignee.tsv"
-outputFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_rawassignee.csv"
+keysFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_rawinventor_rawassignee.csv"
+searchFile="/Users/aiyenggar/OneDrive/stata/qgis/uspatentcitation.tsv"
+outputFile="/Users/aiyenggar/OneDrive/stata/qgis/cgcd_uspatentcitation.csv"
 
 keysDict = {}
 with open(keysFile, 'r', encoding='utf-8') as keysf:
@@ -28,7 +28,7 @@ for row in reader:
     if reader.line_num == 1:
         writer.writerow(row)
         continue
-    if row[1] in keysDict:
+    if row[2] in keysDict:
         writer.writerow(row)
 
 keysf.close()

@@ -1,7 +1,7 @@
 # encoding=utf8  
 import csv
 
-keysFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_rawlocation.csv"
+keysFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_rawlocation_cluster_inventor.csv"
 searchFile="/Users/aiyenggar/OneDrive/stata/qgis/rawinventor.tsv"
 outputFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_rawinventor.csv"
 

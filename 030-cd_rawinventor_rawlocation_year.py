@@ -6,9 +6,9 @@ def getDate(dateString):
     sp=dateString.split('-')
     return datetime.date(int(sp[0]),int(sp[1]),int(sp[2]))
     
-keysFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_patents.csv"
+keysFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_rawinventor_rawlocation_cluster.csv"
 searchFile="/Users/aiyenggar/OneDrive/stata/qgis/patent.tsv"
-outputFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_patents_year.csv"
+outputFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_rawinventor_rawlocation_cluster_year.csv"
 
 default_date = getDate("1947-08-15")
 
@@ -33,7 +33,9 @@ for row in reader:
     if row[2] in keysDict:
         newDate = getDate(row[4])
         if ((keysDict[row[2]] == default_date) or (keysDict[row[2]] == newDate)):
-              keysDict[row[2]]=newDate
+            if newDate.year == 9177:
+                newDate = newDate.replace(year=1977)
+            keysDict[row[2]]=newDate
         else:
             print(row[2] + " has multiple dates. Prior " + keysDict[row[2]] + " Now " + newDate)
 searchf.close()

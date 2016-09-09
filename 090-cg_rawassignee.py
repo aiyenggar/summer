@@ -1,9 +1,9 @@
 # encoding=utf8  
 import csv
 
-keysFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_rawinventor_rawlocation_cluster.csv"
+keysFile="/Users/aiyenggar/OneDrive/stata/qgis/cgcd_uspatentcitation.csv"
 searchFile="/Users/aiyenggar/OneDrive/stata/qgis/rawassignee.tsv"
-outputFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_rawassignee.csv"
+outputFile="/Users/aiyenggar/OneDrive/stata/qgis/cg_rawassignee.csv"
 
 keysDict = {}
 with open(keysFile, 'r', encoding='utf-8') as keysf:
