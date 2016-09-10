@@ -5,8 +5,7 @@ keysFile="/Users/aiyenggar/OneDrive/stata/qgis/all_locationid_cluster.csv"
 searchFile="/Users/aiyenggar/OneDrive/stata/qgis/rawlocation.tsv"
 outputFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_rawlocation_cluster_inventor.csv"
 
-#regions = ["Bangalore", "Israel", "Beijing", "Silicon Valley", "Austin", "Boston"]
-regions = ["Bangalore"]
+regions = ["Bangalore", "Israel", "Beijing", "Silicon Valley", "Austin", "Boston"]
 
 keysDict = {}
 with open(keysFile) as keysf:
