@@ -29,7 +29,25 @@ gen lpap =  cond(cga_cluster!=cdi_cluster & cga_assignee_id!=cda_assignee_id, 1,
 export delimited using "/Users/aiyenggar/OneDrive/stata/qgis/cgcd_minimal_BEI.csv", replace
 save cgcd_minimal_BEI.dta, replace
 
+
 sort cit_year
 collapse (sum) la (sum) lap (sum) lpa (sum)lpap, by(cit_year)
-drop if cit_year < 1976 | cit_year > 2015
-graph twoway (scatter la cit_year) (scatter lap cit_year) (scatter lpa cit_year) (scatter lpap cit_year), legend(label(1 Local Internal) label(2 Cluster) label(3 Geographical Diversification) label(4 Diffusion))
+
+graph twoway (scatter la cit_year) (line lap cit_year) if cit_year >= 1976 & cit_year <= 2015, ///
+	ytitle("Number of Patent Citations") xtitle("Year of Citation") ///
+	title("Local Knowledge Flows in Beijing") ///
+	note("Source: PatentsView.org") ///
+	legend(label(1 Same Location, Same Firm) label(2 Same Location, Different Firm))
+//graph save BeijingLocal1976.gph, replace
+graph2tex, epsfile(BeijingLocal1976) ht(5) caption(Local Knowledge Flows in Beijing)
+
+
+graph twoway (scatter la cit_year) (line lap cit_year) ///
+	(scatter lpa cit_year) (line lpap cit_year) if cit_year >= 1976 & cit_year <= 2015, ///
+	ytitle("Number of Patent Citations") xtitle("Year of Citation") ///  
+	title("Knowledge Flows from Beijing since 1976") ///
+	note("Source: PatentsView.org") ///
+	legend(label(1 Same Location, Same Firm) label(2 Same Location, Different Firm) label(3 Different Location, Same Firm) label(4 Different Location, Different Firm))
+//graph save Beijing1976.gph, replace
+graph2tex, epsfile(Beijing1976) ht(5) caption(Knowledge Flows from Beijing)
+

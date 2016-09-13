@@ -29,7 +29,23 @@ gen lpap =  cond(cga_cluster!=cdi_cluster & cga_assignee_id!=cda_assignee_id, 1,
 export delimited using "/Users/aiyenggar/OneDrive/stata/qgis/cgcd_minimal_SIV.csv", replace
 save cgcd_minimal_SIV.dta, replace
 
+
 sort cit_year
 collapse (sum) la (sum) lap (sum) lpa (sum)lpap, by(cit_year)
 drop if cit_year < 1976 | cit_year > 2015
-graph twoway (scatter la cit_year) (scatter lap cit_year) (scatter lpa cit_year) (scatter lpap cit_year), legend(label(1 Local Internal) label(2 Cluster) label(3 Geographical Diversification) label(4 Diffusion))
+graph twoway (scatter la cit_year) (scatter lap cit_year) ///
+	(scatter lpa cit_year) (scatter lpap cit_year), ///
+	ytitle("Number of Patent Citations") xtitle("Year of Citation") ///
+	title("Knowledge Flows from Silicon Valley") ///
+	note("Source: PatentsView.org") ///
+	legend(label(1 Local Firm) label(2 Cluster) label(3 Geographical Diversification) label(4 Diffusion))
+graph save Valley.gph, replace
+
+drop if cit_year < 1990 | cit_year > 2015
+graph twoway (scatter la cit_year) (scatter lap cit_year) ///
+	(scatter lpa cit_year) (scatter lpap cit_year), ///
+	ytitle("Number of Patent Citations") xtitle("Year of Citation") ///
+	title("Knowledge Flows from Silcon Valley since 1990") ///
+	note("Source: PatentsView.org") ///
+	legend(label(1 Local Firm) label(2 Cluster) label(3 Geographical Diversification) label(4 Diffusion))
+graph save Valley1990.gph, replace
