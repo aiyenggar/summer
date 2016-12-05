@@ -1,9 +1,16 @@
-# encoding=utf8  
+# encoding=utf8  j
+
+# Isn't this file essentially mapping rawlocation_id to region name (or cluster)?
 import csv
 
-keysFile="/Users/aiyenggar/OneDrive/stata/qgis/all_locationid_cluster.csv"
-searchFile="/Users/aiyenggar/OneDrive/stata/qgis/rawlocation.tsv"
-outputFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_rawlocation_cluster_inventor.csv"
+#location_id,Cluster
+keysFile="/Users/aiyenggar/OneDrive/code/qgis/all_locationid_cluster.csv"
+
+#id location_id	 city state	 country lat long
+searchFile="/Users/aiyenggar/OneDrive/code/qgis/rawlocation.tsv"
+
+#rawlocation_id,location_id,city,state,country,latlong,cluster
+outputFile="/Users/aiyenggar/OneDrive/code/qgis/cd_rawlocation_cluster_inventor.csv"
 
 regions = ["Bangalore", "Israel", "Beijing", "Silicon Valley", "Austin", "Boston"]
 

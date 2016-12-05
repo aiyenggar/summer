@@ -1,4 +1,24 @@
-/Users/aiyenggar/OneDrive/gis has the shape files for China, India, Israel and USA
-We use the administrative level shapefiles for the areas of interest, and use QGIS to generate a new shape file with only those regions of interest
+Iteration 2, Dated 2016-12-01
+Objective: Create a single shape file with all the urban centers in the world. Yes, I may intend to only study a few regions now, but it does not hurt to have the larger list. A special case needs to be made for the US, where Metropolitan Statistical Areas (MSAs) are used, elsewhere we default to natural earth’s urban definitions.
 
-I used the most detailed layer in each, stripped the data of most columns, and added one column called cluster. Each of the shapes files was then merged into one using Vector -> Data Management Tools -> Merge Shapefiles to One. This was then saved as regions.shp
+To do this, I first take the US MSA data from Metropolitan Statistical Areas https://www.census.gov/geo/maps-data/data/cbf/cbf_msa.html. The specific package is cb_2015_us_cbsa_20m. On this data, I add a new field called Region and set it to the same value as the NAME field, and then delete all other fields. I save this layer as us_metro
+
+Next, I take the natural earth urban centers data from http://www.naturalearthdata.com/downloads/10m-cultural-vectors/ with the specific link being
+http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_urban_areas_landscan.zip 
+So as to not repeat US locations, I need to eliminate all US regions from this file. I did this manually, but there should be a better way to intersect the US country boundary to do this. Again on this data, I add a field called Region and set it to the value as in name_conve (not fully sure), then delete all other fields.
+
+I then set the CRS of both to WRS84
+Then use Vector -> Data Management  Tools -> Merge Shapefiles to create a single world wide shapefile for all urban centres, with the US locations being based on MSA definition, and all others based on natural earth’s definition. I save this shape file as merged_usmsa_worldurban.shp
+
+The regions of immediate interest to me are:
+Tel Aviv-Yafo
+Jerusalem
+Bangalore
+Beijing
+Boston-Cambridge-Newton, MA-NH
+Austin-Round Rock, TX
+San Francisco-Oakland-Hayward, CA
+San Jose-Sunnyvale-Santa Clara, CA
+
+
+

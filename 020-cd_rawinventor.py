@@ -1,9 +1,14 @@
 # encoding=utf8  
 import csv
 
-keysFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_rawlocation_cluster_inventor.csv"
-searchFile="/Users/aiyenggar/OneDrive/stata/qgis/rawinventor.tsv"
-outputFile="/Users/aiyenggar/OneDrive/stata/qgis/cd_rawinventor.csv"
+#rawlocation_id,location_id,city,state,country,latlong,cluster
+keysFile="/Users/aiyenggar/OneDrive/code/qgis/cd_rawlocation_cluster_inventor.csv"
+
+#uuid patent_id	inventor_id rawlocation_id name_first name_last	sequence
+searchFile="/Users/aiyenggar/OneDrive/code/qgis/rawinventor.tsv"
+
+#uuid,patent_id,inventor_id,rawlocation_id,name_first,name_last,sequence
+outputFile="/Users/aiyenggar/OneDrive/code/qgis/cd_rawinventor.csv"
 
 keysDict = {}
 with open(keysFile, 'r', encoding='iso-8859-1') as keysf:
