@@ -2,9 +2,6 @@ set more off
 local datadir /Users/aiyenggar/OneDrive/PatentsView/
 cd `datadir'
 
-import delimited `datadir'uspatentcitation.tsv, encoding(UTF-8)
-save uspatentcitation.dta, replace
-
 use `datadir'uspatentcitation.dta
 preserve
 keep if category == "cited by applicant"
