@@ -95,7 +95,13 @@ keep cit_uuid cg_patent_id ct_patent_id year cg_assignee_id cg_assignee_region c
 save `datadir'uspc.appl.year.ass.ct_inventor_region.dta, replace
 
 duplicates drop ct_patent_id ct_inventor_id, force
-keep ct_patent_id ct_inventor_id ct_region
+keep ct_patent_id ct_inventor_id ct_inventor_region
 sort ct_patent_id
 save ct_patent_inventor_region.dta, replace
 export delimited using `datadir'ct_patent_inventor_region.csv, replace
+
+use `datadir'uspc.appl.year.ass.cg_inventor_region.dta, clear
+joinby ct_patent_id using ct_patent_inventor_region, unmatched(master)
+drop _merge
+save `datadir'uspc.appl.year.ass.inv.region.dta, replace
+export delimited using `datadir'uspc.appl.year.ass.inv.region.csv, replace
