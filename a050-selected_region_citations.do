@@ -1,5 +1,11 @@
-import delimited "/Users/aiyenggar/OneDrive/PatentsView/selected.uspc.appl.sim.inv_region.csv", delimiter(comma) varnames(1) encoding(ISO-8859-1)clear
-save /Users/aiyenggar/OneDrive/PatentsView/selected.uspc.appl.sim.inv_region.dta, clear
+set more off
+local datadir /Users/aiyenggar/OneDrive/PatentsView/
+local imagedir /Users/aiyengger/OneDrive/code/articles/summerv2-images/
+local srcdir /Users/aiyenggar/OneDrive/code/summer/
+cd `datadir'
+
+import delimited "`datadir'selected.uspc.appl.sim.inv_region.csv", delimiter(comma) varnames(1) encoding(ISO-8859-1)clear
+save `datadir'selected.uspc.appl.sim.inv_region.dta, replace
 
 // We start with 23,825,110 observations, leave with 5,820,864 observations
 duplicates drop cg_patent_id ct_patent_id cg_inventor_region ct_inventor_region, force
@@ -17,9 +23,10 @@ gen lpap =  cond(loc_sim==0 & ass_sim==0, 1, 0)
 
 bysort year cg_inventor_region: gen yr_reg_total=_N
 
-save /Users/aiyenggar/OneDrive/PatentsView/summer.dta, replace
+save `datadir'summer.dta, replace
+export delimited using `srcdir'summer.csv, replace
 
-use /Users/aiyenggar/OneDrive/PatentsView/summer.dta, clear
+use `datadir'summer.dta, clear
 collapse (sum) la (sum) lap (sum) lpa (sum)lpap (first)yr_reg_total, by(year cg_inventor_region)
 gen nla = round(la*100/yr_reg_total)
 gen nlap = round(lap*100/yr_reg_total)
