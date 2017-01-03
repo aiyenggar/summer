@@ -1,8 +1,8 @@
 set more off
-local datadir /Users/aiyenggar/OneDrive/PatentsView/
-cd `datadir'
+local destdir /Users/aiyenggar/datafiles/patents/
+cd `destdir'
 
-use `datadir'uspatentcitation.dta
+use `destdir'uspatentcitation.dta
 preserve
 keep if category == "cited by applicant"
 save uspatentcitation.applicant.dta, replace

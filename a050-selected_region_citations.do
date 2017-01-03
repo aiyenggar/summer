@@ -1,11 +1,9 @@
 set more off
-local datadir /Users/aiyenggar/OneDrive/PatentsView/
-local imagedir /Users/aiyengger/OneDrive/code/articles/summerv2-images/
-local srcdir /Users/aiyenggar/OneDrive/code/summer/
-cd `datadir'
+local destdir /Users/aiyenggar/datafiles/patents/
+cd `destdir'
 
-import delimited "`datadir'selected.uspc.appl.sim.inv_region.csv", delimiter(comma) varnames(1) encoding(ISO-8859-1)clear
-save `datadir'selected.uspc.appl.sim.inv_region.dta, replace
+import delimited "`destdir'selected.uspc.appl.sim.inv_region.csv", delimiter(comma) varnames(1) encoding(ISO-8859-1)clear
+save `destdir'selected.uspc.appl.sim.inv_region.dta, replace
 
 // We start with 23,825,110 observations, leave with 5,820,864 observations
 duplicates drop cg_patent_id ct_patent_id cg_inventor_region ct_inventor_region, force
@@ -23,15 +21,15 @@ gen lpap =  cond(loc_sim==0 & ass_sim==0, 1, 0)
 
 bysort year cg_inventor_region: gen yr_reg_total=_N
 
-save `datadir'summer.dta, replace
-export delimited using `srcdir'summer.csv, replace
+save `destdir'summer.dta, replace
+export delimited using `destdir'summer.csv, replace
 
-use `datadir'summer.dta, clear
+use `destdir'summer.dta, clear
 collapse (sum) la (sum) lap (sum) lpa (sum)lpap (first)yr_reg_total, by(year cg_inventor_region)
-gen nla = round(la*100/yr_reg_total)
-gen nlap = round(lap*100/yr_reg_total)
-gen nlpa = round(lpa*100/yr_reg_total)
-gen nlpap = round(lpap*100/yr_reg_total)
+gen nla = round((la*100/yr_reg_total), 0.01)
+gen nlap = round((lap*100/yr_reg_total), 0.01)
+gen nlpa = round((lpa*100/yr_reg_total), 0.01)
+gen nlpap = round((lpap*100/yr_reg_total), 0.01)
 gen nl=nla+nlap /* Same location flows, across assignees */
 gen na=nla+nlpa /* Same assignee flows, across locations */
 
@@ -42,17 +40,17 @@ replace cg_inventor_region="San Francisco-Oakland-Hayward" if cg_inventor_region
 replace cg_inventor_region="San Jose-Sunnyvale-Santa Clara" if cg_inventor_region=="San Jose-Sunnyvale-Santa Clara, CA"
 
 graph twoway (connected nla year, mlabel(nla)) (connected nlap year, mlabel(nlap)), ///
-	by(cg_inventor_region) legend(label(1 Same Region, Same Assignee) label(2 Same Region, Diff Assignee))
+	by(cg_inventor_region) legend(cols(1) label(1 Same Region, Same Assignee) label(2 Same Region, Diff Assignee))
 
-graph twoway (connected nla year if cg_inventor_region=="Bangalore", mlabel(nla)) (line nla year if cg_inventor_region=="Beijing", mlabel(nla)) ///
-	(line nla year if cg_inventor_region=="Tel Aviv-Yafo", mlabel(nla)) (line nla year if cg_inventor_region=="Austin-Round Rock", mlabel(nla)) ///
-	(connected nla year if cg_inventor_region=="Boston-Cambridge-Newton", mlabel(nla)) (line nla year if cg_inventor_region=="San Francisco-Oakland-Hayward", mlabel(nla)) ///
+graph twoway (connected nla year if cg_inventor_region=="Bangalore", mlabel(nla) msymbol(d)) (connected nla year if cg_inventor_region=="Beijing", mlabel(nla) msymbol(t)) ///
+	(connected nla year if cg_inventor_region=="Tel Aviv-Yafo", mlabel(nla) msymbol(s)) (connected nla year if cg_inventor_region=="Austin-Round Rock", mlabel(nla) msymbol(p)) ///
+	(connected nla year if cg_inventor_region=="Boston-Cambridge-Newton", mlabel(nla) msymbol(x)) (connected nla year if cg_inventor_region=="San Francisco-Oakland-Hayward", mlabel(nla) msymbol(o)) ///
 	(line nla year if cg_inventor_region=="San Jose-Sunnyvale-Santa Clara", mlabel(nla)), ///
 	ytitle("Normalized Citations (percent)") xtitle("Year of Citation") ///
 	ylabel(, angle(horizontal)) yscale(titlegap(*+10)) ///
 	title("Same Region Same Assignee Flows") ///
 	note("Data Source: PatentsView.org") ///
-	legend(label(1 Bangalore) label(2 Beijing) label(3 Tel Aviv-Yafo) label(4 Austin-Round Rock) label(5 Boston-Cambridge-Newton) label(6 San Francisco-Oakland-Hayward) label(7 San Jose-Sunnyvale-Santa Clara))
+	legend(cols(1) label(1 Bangalore) label(2 Beijing) label(3 Tel Aviv-Yafo) label(4 Austin-Round Rock) label(5 Boston-Cambridge-Newton) label(6 San Francisco-Oakland-Hayward) label(7 San Jose-Sunnyvale-Santa Clara))
 graph2tex, epsfile(SameRegionSameAssigneeFlows) ht(5) caption(Same Region Same Assignee Flows)
 
 graph twoway (connected nlap year if cg_inventor_region=="Bangalore", mlabel(nlap)) (line nlap year if cg_inventor_region=="Beijing", mlabel(nlap)) ///
@@ -63,7 +61,7 @@ graph twoway (connected nlap year if cg_inventor_region=="Bangalore", mlabel(nla
 	ylabel(, angle(horizontal)) yscale(titlegap(*+10)) ///
 	title("Same Region Different Assignee Flows") ///
 	note("Data Source: PatentsView.org") ///
-	legend(label(1 Bangalore) label(2 Beijing) label(3 Tel Aviv-Yafo) label(4 Austin-Round Rock) label(5 Boston-Cambridge-Newton) label(6 San Francisco-Oakland-Hayward) label(7 San Jose-Sunnyvale-Santa Clara))
+	legend(cols(1) label(1 Bangalore) label(2 Beijing) label(3 Tel Aviv-Yafo) label(4 Austin-Round Rock) label(5 Boston-Cambridge-Newton) label(6 San Francisco-Oakland-Hayward) label(7 San Jose-Sunnyvale-Santa Clara))
 graph2tex, epsfile(SameRegionDiffAssigneeFlows) ht(5) caption(Same Region Different Assignee Flows)
 
 graph twoway (connected nlpa year if cg_inventor_region=="Bangalore", mlabel(nlpa)) (line nlpa year if cg_inventor_region=="Beijing", mlabel(nlpa)) ///
@@ -74,7 +72,7 @@ graph twoway (connected nlpa year if cg_inventor_region=="Bangalore", mlabel(nlp
 	ylabel(, angle(horizontal)) yscale(titlegap(*+10)) ///
 	title("Diff Region Same Assignee Flows") ///
 	note("Data Source: PatentsView.org") ///
-	legend(label(1 Bangalore) label(2 Beijing) label(3 Tel Aviv-Yafo) label(4 Austin-Round Rock) label(5 Boston-Cambridge-Newton) label(6 San Francisco-Oakland-Hayward) label(7 San Jose-Sunnyvale-Santa Clara))
+	legend(cols(1) label(1 Bangalore) label(2 Beijing) label(3 Tel Aviv-Yafo) label(4 Austin-Round Rock) label(5 Boston-Cambridge-Newton) label(6 San Francisco-Oakland-Hayward) label(7 San Jose-Sunnyvale-Santa Clara))
 graph2tex, epsfile(DiffRegionSameAssigneeFlows) ht(5) caption(Diff Region Same Assignee Flows)
 
 graph twoway (line nlpap year if cg_inventor_region=="Bangalore", mlabel(nlpap)) (line nlpap year if cg_inventor_region=="Beijing", mlabel(nlpap)) ///
@@ -85,7 +83,7 @@ graph twoway (line nlpap year if cg_inventor_region=="Bangalore", mlabel(nlpap))
 	ylabel(, angle(horizontal)) yscale(titlegap(*+10)) ///
 	title("Diff Region Diff Assignee Flows") ///
 	note("Data Source: PatentsView.org") ///
-	legend(label(1 Bangalore) label(2 Beijing) label(3 Tel Aviv-Yafo) label(4 Austin-Round Rock) label(5 Boston-Cambridge-Newton) label(6 San Francisco-Oakland-Hayward) label(7 San Jose-Sunnyvale-Santa Clara))
+	legend(cols(1) label(1 Bangalore) label(2 Beijing) label(3 Tel Aviv-Yafo) label(4 Austin-Round Rock) label(5 Boston-Cambridge-Newton) label(6 San Francisco-Oakland-Hayward) label(7 San Jose-Sunnyvale-Santa Clara))
 graph2tex, epsfile(DiffRegionDiffAssigneeFlows) ht(5) caption(Diff Region Diff Assignee Flows)
 
 graph twoway (connected nl year if cg_inventor_region=="Bangalore", mlabel(nl)) (line nl year if cg_inventor_region=="Beijing", mlabel(nl)) ///
@@ -96,7 +94,7 @@ graph twoway (connected nl year if cg_inventor_region=="Bangalore", mlabel(nl)) 
 	ylabel(, angle(horizontal)) yscale(titlegap(*+10)) ///
 	title("Same Region Flows (Aggregated)") ///
 	note("Data Source: PatentsView.org") ///
-	legend(label(1 Bangalore) label(2 Beijing) label(3 Tel Aviv-Yafo) label(4 Austin-Round Rock) label(5 Boston-Cambridge-Newton) label(6 San Francisco-Oakland-Hayward) label(7 San Jose-Sunnyvale-Santa Clara))
+	legend(cols(1) label(1 Bangalore) label(2 Beijing) label(3 Tel Aviv-Yafo) label(4 Austin-Round Rock) label(5 Boston-Cambridge-Newton) label(6 San Francisco-Oakland-Hayward) label(7 San Jose-Sunnyvale-Santa Clara))
 graph2tex, epsfile(SameRegionFlows) ht(5) caption(Same Region Flows)
 
 graph twoway (connected na year if cg_inventor_region=="Bangalore", mlabel(na)) (line na year if cg_inventor_region=="Beijing", mlabel(na)) ///
@@ -107,7 +105,7 @@ graph twoway (connected na year if cg_inventor_region=="Bangalore", mlabel(na)) 
 	ylabel(, angle(horizontal)) yscale(titlegap(*+10)) ///
 	title("Same Assignee Flows (Aggregated)") ///
 	note("Data Source: PatentsView.org") ///
-	legend(label(1 Bangalore) label(2 Beijing) label(3 Tel Aviv-Yafo) label(4 Austin-Round Rock) label(5 Boston-Cambridge-Newton) label(6 San Francisco-Oakland-Hayward) label(7 San Jose-Sunnyvale-Santa Clara) pos(1))
+	legend(cols(1) label(1 Bangalore) label(2 Beijing) label(3 Tel Aviv-Yafo) label(4 Austin-Round Rock) label(5 Boston-Cambridge-Newton) label(6 San Francisco-Oakland-Hayward) label(7 San Jose-Sunnyvale-Santa Clara) pos(1))
 graph2tex, epsfile(SameAssigneeFlows) ht(5) caption(Same Assignee Flows)
 
 	
@@ -121,7 +119,7 @@ graph twoway (connected nla year) (connected nlap year) ///
 	ytitle("Normalized Citations (percent)") xtitle("Year of Citation") ///  
 	title("Knowledge Flows to Bangalore") ///
 	note("Data Source: PatentsView.org") ///
-	legend(label(1 Same Region, Same Assignee) label(2 Same Region, Diff Assignee) label(3 Diff Region, Same Assignee) label(4 Diff Region, Diff Assignee))
+	legend(cols(1) label(1 Same Region, Same Assignee) label(2 Same Region, Diff Assignee) label(3 Diff Region, Same Assignee) label(4 Diff Region, Diff Assignee))
 graph2tex, epsfile(BangaloreNormalized) ht(5) caption(Knowledge Flows in Bangalore)
 
 graph twoway (connected nla year) (connected nlap year) ///
@@ -129,7 +127,7 @@ graph twoway (connected nla year) (connected nlap year) ///
 	ytitle("Normalized Citations (percent)") xtitle("Year of Citation") ///  
 	title("Knowledge Flows to Beijing") ///
 	note("Data Source: PatentsView.org") ///
-	legend(label(1 Same Region, Same Assignee) label(2 Same Region, Diff Assignee) label(3 Diff Region, Same Assignee) label(4 Diff Region, Diff Assignee))
+	legend(cols(1) label(1 Same Region, Same Assignee) label(2 Same Region, Diff Assignee) label(3 Diff Region, Same Assignee) label(4 Diff Region, Diff Assignee))
 graph2tex, epsfile(BeijingNormalized) ht(5) caption(Knowledge Flows in Beijing)
 
 graph twoway (connected nla year) (connected nlap year) ///
@@ -137,7 +135,7 @@ graph twoway (connected nla year) (connected nlap year) ///
 	ytitle("Normalized Citations (percent)") xtitle("Year of Citation") ///  
 	title("Knowledge Flows to Tel Aviv-Yafo") ///
 	note("Data Source: PatentsView.org") ///
-	legend(label(1 Same Region, Same Assignee) label(2 Same Region, Diff Assignee) label(3 Diff Region, Same Assignee) label(4 Diff Region, Diff Assignee))
+	legend(cols(1) label(1 Same Region, Same Assignee) label(2 Same Region, Diff Assignee) label(3 Diff Region, Same Assignee) label(4 Diff Region, Diff Assignee))
 graph2tex, epsfile(TelAviv-YafoNormalized) ht(5) caption(Knowledge Flows in Tel Aviv-Yafo)
 
 graph twoway (connected nla year) (connected nlap year) ///
@@ -145,7 +143,7 @@ graph twoway (connected nla year) (connected nlap year) ///
 	ytitle("Normalized Citations (percent)") xtitle("Year of Citation") ///  
 	title("Knowledge Flows to Boston-Cambridge-Newton, MA-NH") ///
 	note("Data Source: PatentsView.org") ///
-	legend(label(1 Same Region, Same Assignee) label(2 Same Region, Diff Assignee) label(3 Diff Region, Same Assignee) label(4 Diff Region, Diff Assignee))
+	legend(cols(1) label(1 Same Region, Same Assignee) label(2 Same Region, Diff Assignee) label(3 Diff Region, Same Assignee) label(4 Diff Region, Diff Assignee))
 graph2tex, epsfile(Boston-Cambridge-NewtonNormalized) ht(5) caption(Knowledge Flows in Boston-Cambridge-Newton, MA-NH)
 
 graph twoway (connected nla year) (connected nlap year) ///
@@ -153,7 +151,7 @@ graph twoway (connected nla year) (connected nlap year) ///
 	ytitle("Normalized Citations (percent)") xtitle("Year of Citation") ///  
 	title("Knowledge Flows to Austin-Round Rock, TX") ///
 	note("Data Source: PatentsView.org") ///
-	legend(label(1 Same Region, Same Assignee) label(2 Same Region, Diff Assignee) label(3 Diff Region, Same Assignee) label(4 Diff Region, Diff Assignee))
+	legend(cols(1) label(1 Same Region, Same Assignee) label(2 Same Region, Diff Assignee) label(3 Diff Region, Same Assignee) label(4 Diff Region, Diff Assignee))
 graph2tex, epsfile(Austin-Round RockNormalized) ht(5) caption(Knowledge Flows in Austin-Round Rock, TX)
 
 graph twoway (connected nla year) (connected nlap year) ///
@@ -161,7 +159,7 @@ graph twoway (connected nla year) (connected nlap year) ///
 	ytitle("Normalized Citations (percent)") xtitle("Year of Citation") ///  
 	title("Knowledge Flows to San Francisco-Oakland-Hayward, CA") ///
 	note("Data Source: PatentsView.org") ///
-	legend(label(1 Same Region, Same Assignee) label(2 Same Region, Diff Assignee) label(3 Diff Region, Same Assignee) label(4 Diff Region, Diff Assignee))
+	legend(cols(1) label(1 Same Region, Same Assignee) label(2 Same Region, Diff Assignee) label(3 Diff Region, Same Assignee) label(4 Diff Region, Diff Assignee))
 graph2tex, epsfile(SanFrancisco-Oakland-HaywardNormalized) ht(5) caption(Knowledge Flows in San Francisco-Oakland-Hayward, CA)
 
 graph twoway (connected nla year) (connected nlap year) ///
@@ -169,6 +167,6 @@ graph twoway (connected nla year) (connected nlap year) ///
 	ytitle("Normalized Citations (percent)") xtitle("Year of Citation") ///  
 	title("Knowledge Flows to San Jose-Sunnyvale-Santa Clara, CA") ///
 	note("Data Source: PatentsView.org") ///
-	legend(label(1 Same Region, Same Assignee) label(2 Same Region, Diff Assignee) label(3 Diff Region, Same Assignee) label(4 Diff Region, Diff Assignee))
+	legend(cols(1) label(1 Same Region, Same Assignee) label(2 Same Region, Diff Assignee) label(3 Diff Region, Same Assignee) label(4 Diff Region, Diff Assignee))
 graph2tex, epsfile(SanJose-Sunnyvale-SantaClaraNormalized) ht(5) caption(Knowledge Flows in San Jose-Sunnyvale-Santa Clara, CA)
 

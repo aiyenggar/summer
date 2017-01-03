@@ -2,12 +2,11 @@ cap log close
 log using knowledge-flows.log, replace
 
 set more off
-local datadir /Users/aiyenggar/OneDrive/PatentsView/
+local destdir /Users/aiyenggar/datafiles/patents/
 local imagedir /Users/aiyenggar/OneDrive/code/articles/knowledge-flows-images/
-local srcdir /Users/aiyenggar/OneDrive/code/summer/
-cd `datadir'
+cd `destdir'
 
-use `datadir'summer.dta, clear
+use `destdir'summer.dta, clear
 
 drop if year < 2000
 replace cg_inventor_region="Austin-Round Rock" if cg_inventor_region=="Austin-Round Rock, TX"

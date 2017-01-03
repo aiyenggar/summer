@@ -8,10 +8,10 @@ Created on Fri Dec  9 05:48:51 2016
 import csv
 
 #cg_patent_id,ct_patent_id,year,cg_inventor_region,ct_inventor_region,ass_sim,loc_sim
-keysFile="/Users/aiyenggar/OneDrive/PatentsView/uspc.appl.sim.inv_region.csv"
+keysFile="/Users/aiyenggar/OneDrive/datafiles/patents/uspc.appl.sim.inv_region.csv"
 
 #cg_patent_id,ct_patent_id,year,cg_inventor_region,ct_inventor_region,ass_sim,loc_sim
-outputFile="/Users/aiyenggar/OneDrive/PatentsView/selected.uspc.appl.sim.inv_region.csv"
+outputFile="/Users/aiyenggar/datafiles/patents/selected.uspc.appl.sim.inv_region.csv"
 
 keysf = open(keysFile, 'r', encoding='utf-8')
 kreader = csv.reader(keysf)

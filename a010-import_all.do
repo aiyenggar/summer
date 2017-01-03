@@ -1,6 +1,7 @@
 set more off
-local datadir /Users/aiyenggar/OneDrive/PatentsView/
-cd `datadir'
+local datadir /Users/aiyenggar/OneDrive/data/patentsview/
+local destdir /Users/aiyenggar/datafiles/patents/
+cd `destdir'
 
 import delimited `datadir'application.tsv, varnames(1) encoding(UTF-8) clear
 save application.dta, replace

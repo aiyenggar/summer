@@ -8,11 +8,11 @@ Created on Fri Dec  9 05:48:51 2016
 import csv
 
 #patent_id,inventor_id,region
-keysFile="/Users/aiyenggar/OneDrive/PatentsView/rawinventor_region.csv"
+keysFile="/Users/aiyenggar/datafiles/patents/rawinventor_region.csv"
 #cit_uuid,cg_patent_id,ct_patent_id,year,cg_assignee_id,cg_assignee_region,ct_assignee_id,ct_assignee_region,cg_inventor_id,cg_inventor_region
-searchFile="/Users/aiyenggar/OneDrive/PatentsView/uspc.appl.year.ass.cg_inventor_region.csv"
+searchFile="/Users/aiyenggar/datafiles/patents/uspc.appl.year.ass.cg_inventor_region.csv"
 #cit_uuid,cg_patent_id,ct_patent_id,year,cg_assignee_id,cg_assignee_region,ct_assignee_id,ct_assignee_region,cg_inventor_id,cg_inventor_region,ct_inventor_id,ct_inventor_region
-outputFile="/Users/aiyenggar/OneDrive/PatentsView/uspc.appl.year.ass.inv.region.csv"
+outputFile="/Users/aiyenggar/datafiles/patents/uspc.appl.year.ass.inv.region.csv"
 
 keysf = open(keysFile, 'r', encoding='utf-8')
 kreader = csv.reader(keysf)

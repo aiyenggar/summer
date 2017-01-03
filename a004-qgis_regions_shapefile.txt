@@ -1,4 +1,4 @@
-Iteration 2, Dated 2016-12-01
+Iteration 3, Dated 2017-01-03 (changed desitnation locations)
 Objective: Create a single shape file with all the urban centers in the world. Yes, I may intend to only study a few regions now, but it does not hurt to have the larger list. A special case needs to be made for the US, where Metropolitan Statistical Areas (MSAs) are used, elsewhere we default to natural earth’s urban definitions.
 
 To do this, I first take the US MSA data from Metropolitan Statistical Areas https://www.census.gov/geo/maps-data/data/cbf/cbf_msa.html. The specific package is cb_2015_us_cbsa_20m. On this data, I add a new field called Region and set it to the same value as the NAME field, and then delete all other fields. I save this layer as us_metro

@@ -1,6 +1,6 @@
 In QGIS - Create a Layer from a Delimited Text File, 
 Layer - Add Layer - Create a layer from a delimited text file
-/Users/aiyenggar/OneDrive/PatentsView/location.tsv Let the X: Longitude and Y: Latitude be as default. Set CRS to WGS84 EPSG:4326 (was previously World Geodetic System 1984 IGNF:WBS84G)
+/Users/aiyenggar/OneDrive/data/patentsview/location.tsv Let the X: Longitude and Y: Latitude be as default. Set CRS to WGS84 EPSG:4326 (was previously World Geodetic System 1984 IGNF:WBS84G)
 
 Open merged_usmsa_worldurban.shp file
 
@@ -13,7 +13,7 @@ Joined table - Keep all records (including non-matching target records)
 
 This will take a few hours, then say yes to if you would like to add the layer to TOC. Choose the CRS as above. I save this as regions_usmsa_worldurban_100k
 
-Open the attribute table, select all. Now go back to the map, right click on the layer and save as -> use csv option and save as /Users/aiyenggar/OneDrive/code/PatentsView/locationid_region.csv
+Open the attribute table, select all. Now go back to the map, right click on the layer and save as -> use csv option and save as /Users/aiyenggar/OneDrive/data/patentsview/locationid_region.csv
 
 {8-Dec-2016 - Not sure if I need this anymore:
 Add an additional line at the end: missing_location_id,DataUnavailable and}
