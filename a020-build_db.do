@@ -8,7 +8,7 @@ replace new_region = new_region + ", " + state if (missing(location_id) & !missi
 replace new_region = new_region + ", " + city if (missing(location_id) & !missing(city))
 
 keep id location_id new_region
-merge m:1 location_id using locationid.latlong.region.dta
+merge m:1 location_id using `destdir'locationid.latlong.region.dta
 // There is one location_id ro8fiqvk0hdg that is not referenced by any rawlocation_id
 // There are 328,838 empty location_id that are referenced by a rawlocation_id, but obviously absent in location.tsv
 // Choosing to keep all
@@ -19,12 +19,13 @@ replace region="Singapore" if (region!="Singapore" & country=="Singapore")
 keep rawlocation_id location_id region region_source country
 sort rawlocation_id
 save `destdir'rawlocation_region.dta, replace
+export delimited using `destdir'rawlocation_region.csv, replace
 
 use `destdir'rawinventor.dta, clear
-merge 1:1 rawlocation_id using rawlocation_region
+merge 1:1 rawlocation_id using `destdir'rawlocation_region
 keep if _merge==3
 // Check if all the rawlocation_id look ok. I saw some four digit ones
-merge m:1 patent_id using application, keep(match) nogenerate
+merge m:1 patent_id using `destdir'application.dta, keep(match) nogenerate
 gen appl_date = date(date,"YMD")
 gen year=year(appl_date)
 keep patent_id inventor_id region region_source country year
@@ -35,13 +36,22 @@ export delimited using `destdir'rawinventor_region.csv, replace
 
 use `destdir'rawassignee.dta, clear
 // We have 5,300,888 entries in rawassignee
-merge 1:1 rawlocation_id using rawlocation_region
+merge 1:1 rawlocation_id using `destdir'rawlocation_region
 keep if _merge==3
-keep patent_id assignee_id region region_source country ipr_score
+keep patent_id assignee_id region region_source country
 sort patent_id
 save `destdir'rawassignee_region.dta, replace
 // rawassignee_region has 5,300,888 entries; <revise, should no longer be true> 698,480 have an empty region (hopefully because it is not an urban center)
+export delimited using `destdir'rawassignee_region.csv, replace
 
+
+
+
+
+
+
+
+// Try and move this to Python
 use `destdir'uspatentcitation.applicant.dta, clear
 keep uuid patent_id citation_id
 merge m:1 patent_id using application, keep(match) nogenerate

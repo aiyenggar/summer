@@ -6,7 +6,7 @@ use `destdir'uspatentcitation.dta
 preserve
 keep if category == "cited by applicant"
 save uspatentcitation.applicant.dta, replace
-
+export delimited using uspatentcitation.applicant.csv, replace
 
 restore
 preserve

@@ -34,6 +34,10 @@ rename id location_id
 save locationid_region.dta, replace
 
 //Import country_ipr here
+set more off
+local datadir /Users/aiyenggar/OneDrive/data/patentsview/
+local destdir /Users/aiyenggar/datafiles/patents/
+cd `destdir'
 
 import delimited `datadir'locationid_country.csv, varnames(1) encoding(UTF-8) clear
 rename id location_id
