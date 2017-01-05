@@ -34,6 +34,7 @@ rename id location_id
 save locationid_region.dta, replace
 
 //Import country_ipr here
+
 import delimited `datadir'locationid_country.csv, varnames(1) encoding(UTF-8) clear
 rename id location_id
 rename name country
@@ -41,12 +42,19 @@ rename cortez ipr_score
 keep location_id country ipr_score
 save locationid_country.dta, replace
 
+duplicates drop country, force
+keep country ipr_score
+drop if missing(country)
+save country_ipr.dta, replace
+export delimited using country_ipr.csv, replace
+
 set more off
 local datadir /Users/aiyenggar/OneDrive/data/patentsview/
 local destdir /Users/aiyenggar/datafiles/patents/
 cd `destdir'
 
 use locationid_region.dta, clear
+
 gen region_source = "MSA-Urban Centers" if !missing(region)
 replace region_source = "PatentsView" if missing(region)
 
@@ -54,8 +62,36 @@ gen new_region = country if region_source=="PatentsView"
 replace new_region = new_region + ", " + state if (region_source=="PatentsView" & !missing(state))
 replace new_region = new_region + ", " + city if (region_source=="PatentsView" & !missing(city))
 replace region=new_region if region_source=="PatentsView"
-keep location_id region region_source latitude longitude
+rename country country2
+keep location_id region region_source latitude longitude country2
 merge 1:1 location_id using locationid_country
+drop ipr_score
 drop _merge
-save `destdir'locationid.latlong.region.ipr.dta, replace
-export delimited using `destdir'locationid.latlong.region.ipr.csv, replace
+save temp.dta, replace
+
+drop if missing(country)
+duplicates drop country2, force
+keep country2 country
+rename country mcountry
+save map.dta, replace
+
+use temp.dta, clear
+merge m:1 country2 using map.dta
+drop _merge
+// 55 observations don't still have a country name, 21 unique country codes
+replace country=mcountry if (missing(country) & !missing(mcountry))
+replace country=mcountry if (region_source=="PatentsView" & country != mcountry)
+replace country="United States" if (region=="Brownsville-Harlingen, TX" & country!="United States")
+replace country="United States" if (region=="Watertown-Fort Drum, NY" & country!="United States")
+replace country="United States" if (region=="Tucson, AZ" & country!="United States")
+replace country="United States" if (region=="El Paso, TX" & country!="United States")
+replace country="United States" if (region=="McAllen-Edinburg-Mission, TX" & country!="United States")
+replace country="United States" if (region=="Ogdensburg-Massena, NY" & country!="United States")
+replace country="United States" if (region=="Rio Grande City, TX" & country!="United States")
+replace country="United States" if (region=="Bellingham, WA" & country!="United States")
+replace country="Hong Kong" if (region=="Hong Kong" & country!="Hong Kong")
+drop country2 mcountry
+save `destdir'locationid.latlong.region.dta, replace
+export delimited using `destdir'locationid.latlong.region.csv, replace
+rm map.dta
+rm temp.dta

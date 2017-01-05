@@ -8,7 +8,7 @@ replace new_region = new_region + ", " + state if (missing(location_id) & !missi
 replace new_region = new_region + ", " + city if (missing(location_id) & !missing(city))
 
 keep id location_id new_region
-merge m:1 location_id using locationid.latlong.region.ipr.dta
+merge m:1 location_id using locationid.latlong.region.dta
 // There is one location_id ro8fiqvk0hdg that is not referenced by any rawlocation_id
 // There are 328,838 empty location_id that are referenced by a rawlocation_id, but obviously absent in location.tsv
 // Choosing to keep all
@@ -16,7 +16,7 @@ replace region=new_region if missing(location_id)
 replace region_source="rawlocation.tsv (PatentsView)" if missing(location_id)
 rename id rawlocation_id
 replace region="Singapore" if (region!="Singapore" & country=="Singapore")
-keep rawlocation_id location_id region region_source country ipr_score
+keep rawlocation_id location_id region region_source country
 sort rawlocation_id
 save `destdir'rawlocation_region.dta, replace
 
@@ -27,10 +27,10 @@ keep if _merge==3
 merge m:1 patent_id using application, keep(match) nogenerate
 gen appl_date = date(date,"YMD")
 gen year=year(appl_date)
-keep patent_id inventor_id region region_source country ipr_score year
+keep patent_id inventor_id region region_source country year
 sort patent_id
 save `destdir'rawinventor_region.dta, replace
-// rawinventor_region has 13,734,673 entries; <revise, should no longer be true> 2,353,724 have an empty region (hopefully because it is not an urban center)
+// rawinventor_region has 13,734,673 entries; 78 have an empty region; 242,038 are not assigned to a country
 export delimited using `destdir'rawinventor_region.csv, replace
 
 use `destdir'rawassignee.dta, clear
