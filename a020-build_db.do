@@ -3,35 +3,44 @@ local destdir /Users/aiyenggar/datafiles/patents/
 cd `destdir'
 
 use `destdir'rawlocation.dta, clear
-merge m:1 location_id using locationid_region
+gen new_region = country if missing(location_id)
+replace new_region = new_region + ", " + state if (missing(location_id) & !missing(state))
+replace new_region = new_region + ", " + city if (missing(location_id) & !missing(city))
+
+keep id location_id new_region
+merge m:1 location_id using locationid.latlong.region.ipr.dta
 // There is one location_id ro8fiqvk0hdg that is not referenced by any rawlocation_id
 // There are 328,838 empty location_id that are referenced by a rawlocation_id, but obviously absent in location.tsv
 // Choosing to keep all
+replace region=new_region if missing(location_id)
+replace region_source="rawlocation.tsv (PatentsView)" if missing(location_id)
 rename id rawlocation_id
-keep rawlocation_id location_id region
+replace region="Singapore" if (region!="Singapore" & country=="Singapore")
+keep rawlocation_id location_id region region_source country ipr_score
 sort rawlocation_id
-// Out of a total of 128912 unique location_id, 53424 have been mapped to a region and 75488 have been left empty
-// Those 75488 we need to ensure do not fall under any urban region of the world
 save `destdir'rawlocation_region.dta, replace
 
 use `destdir'rawinventor.dta, clear
 merge 1:1 rawlocation_id using rawlocation_region
 keep if _merge==3
 // Check if all the rawlocation_id look ok. I saw some four digit ones
-keep patent_id inventor_id region
+merge m:1 patent_id using application, keep(match) nogenerate
+gen appl_date = date(date,"YMD")
+gen year=year(appl_date)
+keep patent_id inventor_id region region_source country ipr_score year
 sort patent_id
 save `destdir'rawinventor_region.dta, replace
-// rawinventor_region has 13,734,673 entries; 2,353,724 have an empty region (hopefully because it is not an urban center)
+// rawinventor_region has 13,734,673 entries; <revise, should no longer be true> 2,353,724 have an empty region (hopefully because it is not an urban center)
 export delimited using `destdir'rawinventor_region.csv, replace
 
 use `destdir'rawassignee.dta, clear
 // We have 5,300,888 entries in rawassignee
 merge 1:1 rawlocation_id using rawlocation_region
 keep if _merge==3
-keep patent_id assignee_id region
+keep patent_id assignee_id region region_source country ipr_score
 sort patent_id
 save `destdir'rawassignee_region.dta, replace
-// rawassignee_region has 5,300,888 entries; 698,480 have an empty region (hopefully because it is not an urban center)
+// rawassignee_region has 5,300,888 entries; <revise, should no longer be true> 698,480 have an empty region (hopefully because it is not an urban center)
 
 use `destdir'uspatentcitation.applicant.dta, clear
 keep uuid patent_id citation_id
