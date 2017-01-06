@@ -157,3 +157,8 @@ save `destdir'patents_by_region.dta, replace
 export delimited using `destdir'patents_by_region.csv, replace
 
 log close
+
+
+cd /Users/aiyenggar/datafiles/patents/
+use "/Users/aiyenggar/datafiles/patents/patents_by_region.dta", clear
+
