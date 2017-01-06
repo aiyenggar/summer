@@ -6,52 +6,54 @@ local destdir /Users/aiyenggar/datafiles/patents/
 local reportdir /Users/aiyenggar/OneDrive/code/articles/knowledge-flows-images/
 cd `reportdir'
 
-import delimited "`destdir'selected.uspc.appl.sim.inv_region.csv", delimiter(comma) varnames(1) encoding(ISO-8859-1)clear
-save `destdir'selected.uspc.appl.sim.inv_region.dta, replace
+import delimited "`destdir'summer.csv", delimiter(comma) varnames(1) encoding(ISO-8859-1)clear
+rename cg_inventor_year year
+keep year cg_inventor_region cg_inventor_country cg_inventor_ipr yr_reg_total nla nlap nlpa nlpap nl na
 
-// We start with 23,825,110 observations, leave with 5,820,864 observations
-duplicates drop cg_patent_id ct_patent_id cg_inventor_region ct_inventor_region, force
+replace nla=round(nla,.01)
+label variable nla "Local-Internal"
+replace nlap=round(nlap,.01)
+label variable nlap "Local-External"
+replace nlpa=round(nlpa,.01)
+label variable nlpa "Non-Local-Internal"
+replace nlpap=round(nlpap,.01)
+label variable nlpap "Non-Local-External"
+replace nl=round(nl,.01)
+label variable nl "Local Flows"
+replace na=round(na,.01)
+label variable na "Internal Flows"
 
-drop if ass_sim==2
-// Left with 5,058,782 observations
-
-drop if loc_sim==2
-// Left with 4,661,422 observations
-
-gen la =  cond(loc_sim==1 & ass_sim==1, 1, 0)
-gen lap =  cond(loc_sim==1 & ass_sim==0, 1, 0)
-gen lpa =  cond(loc_sim==0 & ass_sim==1, 1, 0)
-gen lpap =  cond(loc_sim==0 & ass_sim==0, 1, 0)
-
-bysort year cg_inventor_region: gen yr_reg_total=_N
-
+sort cg_inventor_region year
 save `destdir'summer.dta, replace
-export delimited using `destdir'summer.csv, replace
+export delimited using `destdir'summer2.csv, replace
 
 set more off
 local destdir /Users/aiyenggar/datafiles/patents/
 local reportdir /Users/aiyenggar/OneDrive/code/articles/knowledge-flows-images/
 cd `reportdir'
+use `destdir'summer.dta, clear
+
+sort cg_inventor_region year
+bysort cg_inventor_region: gen cflows=sum(yr_reg_total)
+
+gen tresh = 1 if (year == 2012 & cflows >= 1000)
+replace tresh = 0 if missing(tresh)
+egen ntresh = sum(tresh), by(cg_inventor_region)
+drop if ntresh == 0
+drop tresh ntresh
+
+bysort cg_inventor_region: gen cg_count = _N
+drop if cg_count < 10 /* you have fewer than ten entries, or years of data */
+
+encode cg_inventor_region, gen(icg_inventor_region)
+codebook cg_inventor_region
+labelbook icg_inventor_region
+
+
+
+
 
 use `destdir'summer.dta, clear
-collapse (sum) la (sum) lap (sum) lpa (sum)lpap (first)yr_reg_total, by(year cg_inventor_region)
-gen nla = round((la*100/yr_reg_total), 0.01)
-gen nlap = round((lap*100/yr_reg_total), 0.01)
-gen nlpa = round((lpa*100/yr_reg_total), 0.01)
-gen nlpap = round((lpap*100/yr_reg_total), 0.01)
-gen nl=nla+nlap /* Same location flows, across assignees */
-gen na=nla+nlpa /* Same assignee flows, across locations */
-
-drop if year < 2000
-/*
-replace cg_inventor_region="Austin-Round Rock, TX" if cg_inventor_region=="Austin-Round Rock, TX"
-replace cg_inventor_region="Boston-Cambridge-Newton, MA-NH" if cg_inventor_region=="Boston-Cambridge-Newton, MA-NH"
-replace cg_inventor_region="San Francisco-Oakland-Hayward, CA" if cg_inventor_region=="San Francisco-Oakland-Hayward, CA"
-replace cg_inventor_region="San Jose-Sunnyvale-Santa Clara, CA" if cg_inventor_region=="San Jose-Sunnyvale-Santa Clara, CA"
-
-graph twoway (connected nla year, mlabel(nla)) (connected nlap year, mlabel(nlap)), ///
-	by(cg_inventor_region) legend(cols(1) label(1 Same Region, Same Assignee) label(2 Same Region, Different Assignee))
-*/
 graph twoway (connected nla year if cg_inventor_region=="Bangalore", mlabel(nla) msymbol(d)) (connected nla year if cg_inventor_region=="Beijing", msymbol(t)) ///
 	(connected nla year if cg_inventor_region=="Tel Aviv-Yafo", msymbol(s)) (connected nla year if cg_inventor_region=="Austin-Round Rock, TX", msymbol(sh)) ///
 	(connected nla year if cg_inventor_region=="Boston-Cambridge-Newton, MA-NH", msymbol(x)) (connected nla year if cg_inventor_region=="San Francisco-Oakland-Hayward, CA", msymbol(o)) ///
@@ -179,5 +181,6 @@ graph twoway (connected nla year, msymbol(Oh)) (connected nlap year, msymbol(Dh)
 	note("Data Source: PatentsView.org") ///
 	legend(cols(1) label(1 Same Region, Same Assignee) label(2 Same Region, Different Assignee) label(3 Different Region, Same Assignee) label(4 Different Region, Different Assignee))
 graph2tex, epsfile(SanJose-Sunnyvale-SantaClaraNormalized) ht(5) caption(Knowledge Flows in San Jose-Sunnyvale-Santa Clara, CA)
+
 
 log close
