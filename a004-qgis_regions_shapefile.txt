@@ -1,3 +1,9 @@
+Iteration 4, Dated 2017-01-18 (Using Urban Areas alone)
+I take the natural earth urban centers data from http://www.naturalearthdata.com/downloads/10m-cultural-vectors/ with the specific link being
+http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_urban_areas_landscan.zip
+
+I copied all files to the parent folder /Users/aiyenggar/OneDrive/gis renamed all files as urban_areas. Then I opened urban_areas.shp in QGIS, deleted all but the name field. Created a new field called region. Selected all observations (some 6000 odd), and set the region to the be same as the name. Then deleted name, and saved the file. The question is if there are overlapping areas - like maybe Newark is its own but also part of New York. Not sure.
+
 Iteration 3, Dated 2017-01-03 (changed desitnation locations)
 Objective: Create a single shape file with all the urban centers in the world. Yes, I may intend to only study a few regions now, but it does not hurt to have the larger list. A special case needs to be made for the US, where Metropolitan Statistical Areas (MSAs) are used, elsewhere we default to natural earth’s urban definitions.
 
