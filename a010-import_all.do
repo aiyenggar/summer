@@ -141,4 +141,9 @@ save `destdir'locationid.latlong.region.dta, replace
 export delimited using `destdir'locationid.latlong.region.csv, replace
 rm map.dta
 rm temp.dta
+
+/* 18-Jan-2017 */
+local destdir /Users/aiyenggar/datafiles/patents/
+use `destdir'locationid.latlong.region.dta, clear
+
 /* end integrated region */
