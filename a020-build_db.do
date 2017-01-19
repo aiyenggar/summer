@@ -44,11 +44,15 @@ save `destdir'rawassignee_region.dta, replace
 // rawassignee_region has 5,300,888 entries; <revise, should no longer be true> 698,480 have an empty region (hopefully because it is not an urban center)
 export delimited using `destdir'rawassignee_region.csv, replace
 
+local destdir /Users/aiyenggar/datafiles/patents/
 use `destdir'rawinventor_region.dta, clear
 egen regionid = group(region)
 bysort regionid: gen index=_n
 keep if index==1
 keep region region_source country 
+merge m:1 country using `destdir'country_ipr.dta
+keep if _merge==3
+keep region region_source country ipr_score
 save `destdir'region_region_source_country.dta, replace
 
 

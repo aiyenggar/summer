@@ -9,11 +9,14 @@ I have changed the order this time, as I didn’t get the whole list last time
 Target vector layer (Location)
 Join vector layer urban_areas (merged_usmsa_worldurban)
 Geometric Predicate (intersects)
+Precision - Leave at 0
+Attribute Summary - Take attributes of the first located feature
+Statistics for summary - Delete all (and leave blank)
 Joined table - Keep all records (including non-matching target records)
 
-This will take a few hours, then say yes to if you would like to add the layer to TOC. Choose the CRS as above. I save this as locationid_urban_areas (regions_usmsa_worldurban_100k)
+This will take a few (12) hours, then say yes to if you would like to add the layer to TOC. Choose the CRS as above. I save this as locationid_urban_areas (regions_usmsa_worldurban_100k)
 
-Open the attribute table, select all. Now go back to the map, right click on the layer and save as -> use csv option and save as /Users/aiyenggar/OneDrive/data/patentsview/locationid_urban_areas.csv (/Users/aiyenggar/OneDrive/data/patentsview/locationid_region.csv)
+Open the attribute table, select all. Now go back to the map, right click on the layer and save as -> Format: Comma Separated Value [CSV] and save as /Users/aiyenggar/OneDrive/data/patentsview/locationid_urban_areas.csv (/Users/aiyenggar/OneDrive/data/patentsview/locationid_region.csv)
 
 {8-Dec-2016 - Not sure if I need this anymore:
 Add an additional line at the end: missing_location_id,DataUnavailable and}
