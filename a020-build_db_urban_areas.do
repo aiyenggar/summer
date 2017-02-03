@@ -3,13 +3,27 @@ local destdir ~/datafiles/patents/
 cd `destdir'
 
 use `destdir'rawlocation.dta, clear
-keep id location_id
+rename city rcity
+rename state rstate
+rename country rcountry
+keep id location_id rcity rstate rcountry
 merge m:1 location_id using `destdir'locationid_urban_areas.dta
+
+
+gen geo_source=0 if _merge == 3
+replace geo_source=1 if _merge == 1
+label variable geo_source "0 - location.tsv, 1 - rawlocation.tsv"
+replace city=rcity if _merge == 1
+replace state=rstate if _merge == 1
+replace country=rcountry if _merge == 1
+drop if _merge == 2
+
 // There is one location_id ro8fiqvk0hdg that is not referenced by any rawlocation_id
 // There are 328,838 empty location_id that are referenced by a rawlocation_id, but obviously absent in location.tsv
 // Choosing to keep all
 rename id rawlocation_id
-keep rawlocation_id location_id region country
+order rawlocation_id location_id region city state country latitude longitude geo_source
+keep rawlocation_id location_id region city state country latitude longitude geo_source
 sort rawlocation_id
 save `destdir'rawlocation_urban_areas.dta, replace
 export delimited using `destdir'rawlocation_urban_areas.csv, replace
@@ -21,17 +35,28 @@ keep if _merge==3
 merge m:1 patent_id using `destdir'application.dta, keep(match) nogenerate
 gen appl_date = date(date,"YMD")
 gen year=year(appl_date)
-keep patent_id inventor_id region country year
+rename sequence inventorseq
+keep year patent_id inventor_id region city state country latitude longitude geo_source appl_date name_first name_last inventorseq
+order year patent_id inventor_id region city state country latitude longitude geo_source appl_date name_first name_last inventorseq
 sort patent_id
 save `destdir'rawinventor_urban_areas.dta, replace
 // rawinventor_region has 13,734,673 entries; 78 have an empty region; 242,038 are not assigned to a country
 export delimited using `destdir'rawinventor_urban_areas.csv, replace
 
 use `destdir'rawassignee.dta, clear
+gen assignee = organization if !missing(organization)
+replace assignee = name_first + " " + name_last if missing(assignee)
+drop name_first name_last organization
+rename sequence assigneeseq
+rename type assigneetype
 // We have 5,300,888 entries in rawassignee
 merge 1:1 rawlocation_id using `destdir'rawlocation_urban_areas.dta
 keep if _merge==3
-keep patent_id assignee_id region country
+merge m:1 patent_id using `destdir'application.dta, keep(match) nogenerate
+gen appl_date = date(date,"YMD")
+gen year=year(appl_date)
+keep year patent_id assignee_id region city state country latitude longitude geo_source assigneeseq assigneetype appl_date
+order year patent_id assignee_id region city state country latitude longitude geo_source assigneeseq assigneetype appl_date
 sort patent_id
 save `destdir'rawassignee_urban_areas.dta, replace
 // rawassignee_region has 5,300,888 entries; <revise, should no longer be true> 698,480 have an empty region (hopefully because it is not an urban center)

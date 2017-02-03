@@ -23,6 +23,9 @@ save rawinventor.dta, replace
 
 import delimited `datadir'rawlocation.tsv, varnames(1) encoding(UTF-8) clear
 sort id
+replace city = subinstr(city, `"""',  "", .)
+replace city = substr(city, 1, 32)
+compress city
 save rawlocation.dta, replace
 
 import delimited `datadir'patent_inventor.tsv, varnames(1) encoding(UTF-8) clear
