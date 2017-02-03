@@ -1,6 +1,6 @@
 set more off
-local datadir /Users/aiyenggar/OneDrive/data/patentsview/
-local destdir /Users/aiyenggar/datafiles/patents/
+local datadir ~/OneDrive/data/patentsview/
+local destdir ~/datafiles/patents/
 cd `destdir'
 
 import delimited `datadir'application.tsv, varnames(1) encoding(UTF-8) clear
