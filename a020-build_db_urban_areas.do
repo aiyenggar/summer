@@ -55,8 +55,8 @@ keep if _merge==3
 merge m:1 patent_id using `destdir'application.dta, keep(match) nogenerate
 gen appl_date = date(date,"YMD")
 gen year=year(appl_date)
-keep year patent_id assignee_id region city state country latitude longitude geo_source assigneeseq assigneetype appl_date
-order year patent_id assignee_id region city state country latitude longitude geo_source assigneeseq assigneetype appl_date
+keep year patent_id assignee_id region city state country latitude longitude geo_source assigneeseq assigneetype assignee appl_date
+order year patent_id assignee_id region city state country latitude longitude geo_source assigneeseq assigneetype assignee appl_date
 sort patent_id
 save `destdir'rawassignee_urban_areas.dta, replace
 // rawassignee_region has 5,300,888 entries; <revise, should no longer be true> 698,480 have an empty region (hopefully because it is not an urban center)
