@@ -7,12 +7,12 @@ Created on Fri Dec  9 05:48:51 2016
 
 import csv
 #"cg_patent_id", "ct_patent_id", "cg_inventor_year",  "cg_inventor_id", "cg_inventor_region", "cg_inventor_country", "cg_inventor_ipr", "ct_inventor_id", "ct_inventor_region", "ct_inventor_country", "ct_inventor_ipr", "ass_sim", "loc_sim"
-inputFile="/Users/aiyenggar/datafiles/patents/uspc.appl.master.csv"
+inputFile="~/datafiles/patents/uspc.appl.master.csv"
 oheader=["cg_patent_id", "ct_patent_id", "cg_inventor_year",  "cg_inventor_region", "cg_inventor_country", "cg_inventor_ipr", "ct_inventor_region", "ct_inventor_country", "ct_inventor_ipr", "ass_sim", "loc_sim", "la", "lap", "lpa", "lpap"]
-outputFile="/Users/aiyenggar/datafiles/patents/26-summer.csv"
+outputFile="~/datafiles/patents/26-summer.csv"
 
 soheader=["cg_inventor_year",  "cg_inventor_region", "cg_inventor_country", "cg_inventor_ipr",  "yr_reg_total", "nla", "nlap", "nlpa", "nlpap", "nl", "na"]
-secondOutputFile="/Users/aiyenggar/datafiles/patents/summer.csv"
+secondOutputFile="~/datafiles/patents/summer.csv"
 
 k1 = open(inputFile, 'r', encoding='utf-8')
 kreader1 = csv.reader(k1)

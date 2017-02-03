@@ -2,8 +2,8 @@ cap log close
 log using knowledge-flows.log, append
 
 set more off
-local destdir /Users/aiyenggar/datafiles/patents/
-local imagedir /Users/aiyenggar/OneDrive/code/articles/knowledge-flows-images/
+local destdir ~/datafiles/patents/
+local imagedir ~/OneDrive/code/articles/knowledge-flows-images/
 cd `destdir'
 
 use `destdir'summer.dta, clear

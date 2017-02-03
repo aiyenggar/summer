@@ -1,8 +1,8 @@
 cap log close
 log using knowledge-flows.log, append
 set more off
-local destdir /Users/aiyenggar/datafiles/patents/
-local reportdir /Users/aiyenggar/OneDrive/code/articles/knowledge-flows-images/
+local destdir ~/datafiles/patents/
+local reportdir ~/OneDrive/code/articles/knowledge-flows-images/
 cd `reportdir'
 
 
@@ -75,8 +75,8 @@ count  if (year < 1976 | year > 2012)
 // 417,178 patents with years outside the bracket of interest. Many are absurd years, probably typos
 
 set more off
-local destdir /Users/aiyenggar/datafiles/patents/
-local reportdir /Users/aiyenggar/OneDrive/code/articles/knowledge-flows-images/
+local destdir ~/datafiles/patents/
+local reportdir ~/OneDrive/code/articles/knowledge-flows-images/
 cd `reportdir'
 
 use `destdir'rawinventor_region.dta, clear
@@ -159,6 +159,6 @@ export delimited using `destdir'patents_by_region.csv, replace
 log close
 
 
-cd /Users/aiyenggar/datafiles/patents/
-use "/Users/aiyenggar/datafiles/patents/patents_by_region.dta", clear
+cd ~/datafiles/patents/
+use "~/datafiles/patents/patents_by_region.dta", clear
 

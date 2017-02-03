@@ -2,8 +2,8 @@ cap log close
 log using knowledge-flows.log, append
 
 set more off
-local destdir /Users/aiyenggar/datafiles/patents/
-local reportdir /Users/aiyenggar/OneDrive/code/articles/knowledge-flows-images/
+local destdir ~/datafiles/patents/
+local reportdir ~/OneDrive/code/articles/knowledge-flows-images/
 cd `reportdir'
 
 import delimited "`destdir'summer.csv", delimiter(comma) varnames(1) encoding(ISO-8859-1)clear
@@ -28,8 +28,8 @@ save `destdir'summer.dta, replace
 export delimited using `destdir'summer2.csv, replace
 
 set more off
-local destdir /Users/aiyenggar/datafiles/patents/
-local reportdir /Users/aiyenggar/OneDrive/code/articles/knowledge-flows-images/
+local destdir ~/datafiles/patents/
+local reportdir ~/OneDrive/code/articles/knowledge-flows-images/
 cd `reportdir'
 use `destdir'summer.dta, clear
 

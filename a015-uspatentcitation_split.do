@@ -1,5 +1,5 @@
 set more off
-local destdir /Users/aiyenggar/datafiles/patents/
+local destdir ~/datafiles/patents/
 cd `destdir'
 
 use `destdir'uspatentcitation.dta

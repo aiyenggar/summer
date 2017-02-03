@@ -1,5 +1,5 @@
 set more off
-local destdir /Users/aiyenggar/datafiles/patents/
+local destdir ~/datafiles/patents/
 cd `destdir'
 
 use `destdir'rawlocation.dta, clear
@@ -44,7 +44,7 @@ save `destdir'rawassignee_region.dta, replace
 // rawassignee_region has 5,300,888 entries; <revise, should no longer be true> 698,480 have an empty region (hopefully because it is not an urban center)
 export delimited using `destdir'rawassignee_region.csv, replace
 
-local destdir /Users/aiyenggar/datafiles/patents/
+local destdir ~/datafiles/patents/
 use `destdir'rawinventor_region.dta, clear
 egen regionid = group(region)
 bysort regionid: gen index=_n
