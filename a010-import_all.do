@@ -33,73 +33,56 @@ import delimited `datadir'locationid_region.csv, varnames(1) encoding(UTF-8) cle
 rename id location_id
 save locationid_region.dta, replace
 
-// Added 2017-01-18
-local datadir /Users/aiyenggar/OneDrive/data/patentsview/
-local destdir /Users/aiyenggar/datafiles/patents/
-cd `destdir'
 import delimited `datadir'locationid_urban_areas.csv, varnames(1) encoding(UTF-8) clear
 rename id location_id
+replace city = subinstr(city, `"""',  "", .)
+replace city = substr(city, 1, 32)
+compress city
+drop x y
 save `destdir'locationid_urban_areas.dta, replace
 
-//Import country_ipr here
+import delimited `datadir'nber.tsv, varnames(1) encoding(UTF-8) clear
+save `destdir'nber.dta, replace
 
-set more off
-local datadir /Users/aiyenggar/OneDrive/data/patentsview/
-local destdir /Users/aiyenggar/datafiles/patents/
-cd `destdir'
-import delimited `destdir'uspc-hjt-mapping.csv, varnames(1) encoding(UTF-8) clear
-gen mainclass_id = string(class)
-save `destdir'uspc-hjt-mapping.dta, replace
+use `destdir'uspatentcitation.dta
+preserve
+keep if category == "cited by applicant"
+save uspatentcitation.applicant.dta, replace
+export delimited using uspatentcitation.applicant.csv, replace
 
-import delimited `datadir'uspc.tsv, varnames(1) encoding(UTF-8) clear
-save `destdir'uspc.dta
+restore
+preserve
+keep if category == "cited by examiner"
+save uspatentcitation.examiner.dta, replace
 
+restore
+preserve
+keep if category == "cited by other"
+save uspatentcitation.other.dta, replace
+
+restore
+preserve
+keep if category == "cited by third party"
+save uspatentcitation.thirdparty.dta, replace
+
+restore
+keep if category == ""
+save uspatentcitation.blank.dta, replace
+
+/* Use this only when you need an integrated region */
+/*
+
+import delimited `datadir'uspc_current.tsv, varnames(1) encoding(UTF-8) clear
+save `destdir'uspc_current.dta
 sort sequence
 duplicates drop patent_id, force
-
 sort patent_id
-save `destdir'primary.uspc.dta, replace
-
-duplicates drop country, force
-keep country ipr_score
-drop if missing(country)
-save country_ipr.dta, replace
-export delimited using country_ipr.csv, replace
-
-set more off
-local datadir /Users/aiyenggar/OneDrive/data/patentsview/
-local destdir /Users/aiyenggar/datafiles/patents/
-cd `destdir'
+save `destdir'primary.uspc_current.dta, replace
 
 import delimited `datadir'locationid_country.csv, varnames(1) encoding(UTF-8) clear
 save `destdir'locationid_country.dta, replace
 
-/* 20170118 Start Urban Areas */
-use locationid_urban_areas.dta, clear
-rename country country2
-keep location_id region region_source latitude longitude country2
-merge 1:1 location_id using locationid_country
-drop ipr_score _merge
-save temp.dta, replace
 
-drop if missing(country)
-duplicates drop country2, force
-keep country2 country
-rename country mcountry
-save map.dta, replace
-
-use temp.dta, clear
-merge m:1 country2 using map.dta
-drop _merge
-replace country=mcountry if (missing(country) & !missing(mcountry))
-drop country2 mcountry
-save `destdir'locationid.latlong.urban_areas.dta, replace
-export delimited using `destdir'locationid.latlong.urban_areas.csv, replace
-rm map.dta
-rm temp.dta
-/* End Urban Areas */
-
-/* Use this only when you need an integrated region */
 use locationid_region.dta, clear
 gen region_source = "MSA-Urban Centers" if !missing(region)
 replace region_source = "PatentsView" if missing(region)
@@ -142,8 +125,6 @@ export delimited using `destdir'locationid.latlong.region.csv, replace
 rm map.dta
 rm temp.dta
 
-/* 18-Jan-2017 */
-local destdir /Users/aiyenggar/datafiles/patents/
-use `destdir'locationid.latlong.region.dta, clear
+*/
 
 /* end integrated region */

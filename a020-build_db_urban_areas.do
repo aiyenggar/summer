@@ -4,16 +4,15 @@ cd `destdir'
 
 use `destdir'rawlocation.dta, clear
 keep id location_id
-merge m:1 location_id using `destdir'locationid.latlong.region.dta
+merge m:1 location_id using `destdir'locationid_urban_areas.dta
 // There is one location_id ro8fiqvk0hdg that is not referenced by any rawlocation_id
 // There are 328,838 empty location_id that are referenced by a rawlocation_id, but obviously absent in location.tsv
 // Choosing to keep all
 rename id rawlocation_id
-replace region="Singapore" if (region!="Singapore" & country=="Singapore")
 keep rawlocation_id location_id region country
 sort rawlocation_id
 save `destdir'rawlocation_urban_areas.dta, replace
-export delimited using `destdir'rawlocation_urban_areas.csv replace
+export delimited using `destdir'rawlocation_urban_areas.csv, replace
 
 use `destdir'rawinventor.dta, clear
 merge 1:1 rawlocation_id using `destdir'rawlocation_urban_areas.dta
