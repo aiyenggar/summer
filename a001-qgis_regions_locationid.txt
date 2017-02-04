@@ -2,7 +2,7 @@ Iteration 4, Dated 2017-01-18 (Using Urban Areas alone)
 I take the natural earth urban centers data from http://www.naturalearthdata.com/downloads/10m-cultural-vectors/ with the specific link being
 http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_urban_areas_landscan.zip
 
-I copied all files to the parent folder ~/OneDrive/gis renamed all files as urban_areas. Then I opened urban_areas.shp in QGIS, deleted all but three  fields: name_conve, max_pop_al, min_areakm. Save the file as csv and changed the field name of name_conve as region.
+I copied all files to the parent folder ~/OneDrive/gis renamed all files as urban_areas. Then I opened urban_areas.shp in QGIS, deleted all but three  fields: name_conve, max_pop_al, min_areakm. Save the file changed the field name of name_conve as region, max_pop_al as pop and min_areakm as areakm.
 
 Old stuff - should no longer be needed
 
@@ -30,5 +30,29 @@ Austin-Round Rock, TX
 San Francisco-Oakland-Hayward, CA
 San Jose-Sunnyvale-Santa Clara, CA
 
+
+
+In QGIS - Create a Layer from a Delimited Text File, 
+Layer - Add Layer - Create a layer from a delimited text file
+~/OneDrive/data/patentsview/location.tsv Let the X: Longitude and Y: Latitude be as default. Set CRS to WGS84 EPSG:4326 (was previously World Geodetic System 1984 IGNF:WBS84G)
+
+Open urban_areas.shp (merged_usmsa_worldurban.shp) file
+
+Vector -> Data Management Tools -> Join Attributes by Location
+I have changed the order this time, as I didn’t get the whole list last time
+Target vector layer (Location)
+Join vector layer urban_areas (merged_usmsa_worldurban)
+Geometric Predicate (intersects)
+Precision - Leave at 0
+Attribute Summary - Take attributes of the first located feature
+Statistics for summary - Delete all (and leave blank)
+Joined table - Keep all records (including non-matching target records)
+
+This will take a few (12) hours, then say yes to if you would like to add the layer to TOC. Choose the CRS as above. I save this as locationid_urban_areas (regions_usmsa_worldurban_100k)
+
+Open the attribute table, select all. Now go back to the map, right click on the layer and save as -> Format: Comma Separated Value [CSV] and save as ~/OneDrive/data/patentsview/locationid_urban_areas.csv (~/OneDrive/data/patentsview/locationid_region.csv)
+
+{8-Dec-2016 - Not sure if I need this anymore:
+Add an additional line at the end: missing_location_id,DataUnavailable and}
 
 
