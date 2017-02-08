@@ -25,6 +25,17 @@ sort rawlocation_id
 save `destdir'rawlocation_urban_areas.dta, replace
 export delimited using `destdir'rawlocation_urban_areas.csv, replace
 
+use `destdir'rawlocation_urban_areas.dta, clear
+drop if missing(region)
+keep region country_loc country_rawloc
+replace country_loc=country_rawloc if missing(country_loc) & !missing(country_rawloc) & strlen(country_rawloc)==2
+bysort region: gen index = _n
+keep if index == 1
+keep region country_loc 
+rename country_loc country2
+merge m:1 country2 using country2.country.ipr_score.dta, keep(match master) nogen
+save region.country2.dta, replace
+
 use `destdir'rawinventor.dta, clear
 merge 1:1 rawlocation_id using `destdir'rawlocation_urban_areas.dta, keep(match master) nogen
 rename sequence inventorseq
