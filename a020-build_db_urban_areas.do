@@ -3,44 +3,43 @@ local destdir ~/datafiles/patents/
 cd `destdir'
 
 use `destdir'rawlocation.dta, clear
-rename city rcity
-rename state rstate
-rename country rcountry
-keep id location_id rcity rstate rcountry
+rename id rawlocation_id
+rename city city_rawloc
+rename state state_rawloc
+rename country country_rawloc
+rename latlong latlong_rawloc
 merge m:1 location_id using `destdir'locationid_urban_areas.dta
 
-
-gen geo_source=0 if _merge == 3
-replace geo_source=1 if _merge == 1
-label variable geo_source "0 - location.tsv, 1 - rawlocation.tsv"
-replace city=rcity if _merge == 1
-replace state=rstate if _merge == 1
-replace country=rcountry if _merge == 1
+rename city city_loc
+rename state state_loc
+rename country country_loc
 drop if _merge == 2
 
 // There is one location_id ro8fiqvk0hdg that is not referenced by any rawlocation_id
 // There are 328,838 empty location_id that are referenced by a rawlocation_id, but obviously absent in location.tsv
 // Choosing to keep all
-rename id rawlocation_id
-order rawlocation_id location_id region city state country latitude longitude geo_source
-keep rawlocation_id location_id region city state country latitude longitude geo_source
+
+order rawlocation_id location_id region city_loc state_loc country_loc latitude longitude pop areakm
+drop _merge
 sort rawlocation_id
 save `destdir'rawlocation_urban_areas.dta, replace
 export delimited using `destdir'rawlocation_urban_areas.csv, replace
 
 use `destdir'rawinventor.dta, clear
-merge 1:1 rawlocation_id using `destdir'rawlocation_urban_areas.dta
-keep if _merge==3
-// Check if all the rawlocation_id look ok. I saw some four digit ones
-merge m:1 patent_id using `destdir'application.dta, keep(match) nogenerate
+merge 1:1 rawlocation_id using `destdir'rawlocation_urban_areas.dta, keep(match master) nogen
+rename sequence inventorseq
+merge m:1 patent_id using `destdir'application.dta, keep(match master) nogen
 gen appl_date = date(date,"YMD")
 gen year=year(appl_date)
-rename sequence inventorseq
-keep year patent_id inventor_id region city state country latitude longitude geo_source appl_date name_first name_last inventorseq
-order year patent_id inventor_id region city state country latitude longitude geo_source appl_date name_first name_last inventorseq
+rename number application_id
+drop id series_code country date uuid
+order year patent_id inventor_id region country_loc 
 sort patent_id
 save `destdir'rawinventor_urban_areas.dta, replace
-// rawinventor_region has 13,734,673 entries; 78 have an empty region; 242,038 are not assigned to a country
+// rawinventor_region has 13,734,673 entries; 
+// 3,831,577 have an empty region that includes 2,338,849 unique patents, 1,219,931 unique inventors
+// 9,903,096 have region defined that include 4,736,011  unique patents,  2,424,569 unique inventors
+// Total unique inventors: 3,287,305  
 export delimited using `destdir'rawinventor_urban_areas.csv, replace
 
 use `destdir'rawassignee.dta, clear
@@ -50,17 +49,39 @@ drop name_first name_last organization
 rename sequence assigneeseq
 rename type assigneetype
 // We have 5,300,888 entries in rawassignee
-merge 1:1 rawlocation_id using `destdir'rawlocation_urban_areas.dta
-keep if _merge==3
-merge m:1 patent_id using `destdir'application.dta, keep(match) nogenerate
+merge 1:1 rawlocation_id using `destdir'rawlocation_urban_areas.dta, keep(match master) nogen
+drop uuid
+merge m:1 patent_id using `destdir'application.dta, keep(match master) nogen
 gen appl_date = date(date,"YMD")
 gen year=year(appl_date)
-keep year patent_id assignee_id region city state country latitude longitude geo_source assigneeseq assigneetype assignee appl_date
-order year patent_id assignee_id region city state country latitude longitude geo_source assigneeseq assigneetype assignee appl_date
+rename number application_id
+drop id series_code country date 
+order year patent_id assignee_id region assignee
 sort patent_id
 save `destdir'rawassignee_urban_areas.dta, replace
-// rawassignee_region has 5,300,888 entries; <revise, should no longer be true> 698,480 have an empty region (hopefully because it is not an urban center)
 export delimited using `destdir'rawassignee_urban_areas.csv, replace
+// 360,637 unique assignee ids, 187,224 since 2001
+/* 
+tab assigneetype if year > 2000
+assigneetyp |
+          e |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          2 |  1,360,657       47.39       47.39
+          3 |  1,471,529       51.25       98.65
+          4 |     13,651        0.48       99.12
+          5 |     10,920        0.38       99.50
+          6 |     11,203        0.39       99.89
+          7 |      2,644        0.09       99.99
+          8 |          2        0.00       99.99
+          9 |        105        0.00       99.99
+         12 |         83        0.00       99.99
+         13 |        110        0.00      100.00
+         14 |         61        0.00      100.00
+         15 |         43        0.00      100.00
+         16 |          2        0.00      100.00
+------------+-----------------------------------
+      Total |  2,871,010      100.00
+*/
 
 
 

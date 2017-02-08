@@ -21,6 +21,9 @@ import delimited `datadir'rawinventor.tsv, varnames(1) encoding(UTF-8) clear
 sort patent_id sequence
 save rawinventor.dta, replace
 
+import delimited `datadir'location.tsv, varnames(1) encoding(UTF-8) clear
+save location.dta, replace
+
 import delimited `datadir'rawlocation.tsv, varnames(1) encoding(UTF-8) clear
 sort id
 replace city = subinstr(city, `"""',  "", .)
