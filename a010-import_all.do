@@ -1,5 +1,5 @@
 set more off
-local datadir ~/OneDrive/data/patentsview/
+local datadir ~/data/patentsview/
 local destdir ~/datafiles/patents/
 cd `destdir'
 
