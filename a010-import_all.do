@@ -63,6 +63,11 @@ save uspatentcitation.examiner.dta, replace
 
 restore
 preserve
+keep if category == "cited by applicant" | category == "cited by examiner"
+save uspatentcitation.applicant.examiner.dta, replace
+
+restore
+preserve
 keep if category == "cited by other"
 save uspatentcitation.other.dta, replace
 
