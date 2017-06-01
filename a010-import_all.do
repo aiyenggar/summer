@@ -60,11 +60,13 @@ restore
 preserve
 keep if category == "cited by examiner"
 save uspatentcitation.examiner.dta, replace
+export delimited using uspatentcitation.examiner.csv, replace
 
 restore
 preserve
 keep if category == "cited by applicant" | category == "cited by examiner"
 save uspatentcitation.applicant.examiner.dta, replace
+export delimited using uspatentcitation.applicant.examiner.csv, replace
 
 restore
 preserve

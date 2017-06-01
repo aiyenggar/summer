@@ -43,7 +43,7 @@ merge m:1 patent_id using `destdir'application.dta, keep(match master) nogen
 gen appl_date = date(date,"YMD")
 gen year=year(appl_date)
 rename number application_id
-drop id series_code country date uuid
+drop id series_code country uuid
 order year patent_id inventor_id region country_loc 
 sort patent_id
 save `destdir'rawinventor_urban_areas.dta, replace
@@ -52,8 +52,8 @@ save `destdir'rawinventor_urban_areas.dta, replace
 // 9,903,096 have region defined that include 4,736,011  unique patents,  2,424,569 unique inventors
 // Total unique inventors: 3,287,305  
 use `destdir'rawinventor_urban_areas.dta, clear
-keep patent_id inventor_id region country_loc year pop areakm
-order patent_id inventor_id region country_loc year pop areakm
+keep patent_id inventor_id region country_loc year pop areakm date
+order patent_id inventor_id region country_loc year pop areakm date
 export delimited using `destdir'rawinventor_urban_areas.csv, replace
 
 use `destdir'rawassignee.dta, clear
